@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <title>E-Vegetables Prince Enterprises</title>
+  <style media="screen">
+    .footer {
+      position: fixed;
+    }
+
+    .pull-right {
+      display: flex;
+      align-items: flex-end;
+      text-align: end;
+      justify-content: end;
+    }
+
+    .man {
+      margin-top: -72px;
+    }
+  </style>
+</head>
+
+<body style="background-color:#f7f7f7;">
+  {%if request.user.is_authenticated%}
+  {% include "ecom/customer_navbar.html" %}
+  {%else%}
+  {% include "ecom/navbar.html" %}
+  {%endif%}
+  <br><br><br>
+
+  <main>
+    <div class="container py-4 man">
+      <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="container-fluid py-5">
+          <h1 class="display-5 fw-bold">Prince Enterprises</h1>
+          <p class="col-md-8 fs-4">Using a series of utilities, you can create this jumbotron, just like the one in
+            previous versions of Bootstrap. Check out the examples below for how you can remix and restyle it to your
+            liking.</p>
+            <a href="/" class="btn btn-primary">Continue shopping</a>
+        </div>
+      </div>
+
+      <div class="row align-items-md-stretch">
+        <div class="col-md-6">
+          <div class="h-100 p-5 text-bg-dark rounded-3">
+            <h2>Fresh Vegetables</h2>
+            <p>
+              You need to make sure that you provide fresh vegetables at reasonable prices and consider their profit margin. For instance, if you supply fresh vegetables and fruits at low prices, it will help them earn more profits. Also, they become your regular customers, and you will get more orders than ever before.</p>
+            {% comment %} <button class="btn btn-outline-light" type="button">Example button</button> {% endcomment %}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="h-100 p-5 bg-light border rounded-3">
+            <h2>Fresh Fruits</h2>
+            <p>
+              Image result for about fruits enterprises
+              A fruit stand is a primarily open-air business venue that sells seasonal fruit and many fruit products from local growers. It might also sell vegetables and various processed items derived from fruit.</p>
+            {% comment %} <button class="btn btn-outline-secondary" type="button">Example button</button> {% endcomment %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+
+
+  <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+  {% include "ecom/footer.html" %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
+
+</body>
+
+</html>

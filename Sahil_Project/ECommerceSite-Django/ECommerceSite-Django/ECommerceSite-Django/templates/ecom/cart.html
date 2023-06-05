@@ -1,0 +1,229 @@
+{% extends 'ecom/homebase.html' %}
+{% load static %}
+{% block content %}
+
+
+<head>
+
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/fontawesome/4.7.0/css/font-awesome.min.css">
+
+
+
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<style media="screen">
+  .button {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #f4511e;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 28px;
+  padding: 20px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.button span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.button:hover span {
+  padding-right: 25px;
+}
+
+.button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+.button2 {
+  background-color: white;
+  color: black;
+  border: 2px solid #008CBA;
+}
+
+.button2:hover {
+  background-color: #008CBA;
+  color: white;
+}
+
+.action{
+  border-radius: 8px;
+}
+
+</style>
+
+</head>
+
+<br><br><br><br>
+
+<div class="container">
+  <div class="panel panel-success">
+    <div class="panel-heading">
+      <h6 style="text-align:center;" class="panel-title">My Cart</h6>
+    </div>
+    <table class="table table-hover table-bordered" id="dev-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Image</th>
+          <th>Price</th>
+          <th>Description</th>
+          <th>Qty.</th>
+          <th>Amount</th>
+          <th>Action</th>
+          <th>Delete</th>
+          
+        </tr>
+      </thead>
+      {% for p in products %}
+      {% if p %}
+
+      <tr>
+        <td> {{p.name}}</td>
+        <td> <img src="{% static p.product_image.url %}" alt="Profile Pic" height="50px" width="50px" /></td>
+        <td>₹<span id="price{{p.id}}">{{p.price}}</span></td>
+        <td>{{p.description}}</td>
+        <td>{{p.quantity}} x <input id="qty{{p.id}}" type="number" min="1" max="50" name="name{{p.id}}" value="1"></span></td>
+        <td id="eachTot{{p.id}}">{{p.price}}</td>
+        <td class="divpr"><button id="m{{p.id}}" class="minus">-</button> <button id="p{{p.id}}" class="plus">+</button></td>
+        <td><a class="btn btn-danger btn-xs" href="{% url 'remove-from-cart' p.id  %}"><span class="glyphicon glyphicon-trash"></span></a></td>
+        <input type="hidden" id="cart-value" name="cart-value">
+
+      </tr>
+      {%else%}
+      <br><br><br>
+      <h1>no products</h1>
+      {% endif %}
+      {% endfor %}
+    </table>
+  </div>
+</div>
+<br><br><br>
+<div style="text-align: center;">
+  <button class="btn btn-danger btn-lg" >Total ₹<span id="total">{{total}}</span></button>
+  <a href="/customer-address"><button class="btn btn-success btn-lg" ><span>Purchase </span></button></a>
+</div>
+
+
+<br><br><br><br><br>
+
+<script>
+
+  let Total = 0;
+  let cart = {}
+  if (JSON.parse(localStorage.getItem('cart')) != null) {
+    cart = JSON.parse(localStorage.getItem('cart'))
+    Total = 0;
+    for (const key in cart) {
+      productpresent = false;
+      {% for p in products %}
+      {% if p %}
+        if ("{{p.id}}" == key) {
+          productpresent = true;
+        }
+      {% endif %}
+      {% endfor %}
+      if (productpresent == true) {
+        document.getElementById('qty'+`${key}`).value = cart[key];
+        price=document.getElementById('price'+`${key}`).innerHTML;
+        Total += parseInt(price)*parseInt(cart[key])
+      }
+      else {
+        delete cart[key];
+      }
+    };
+    if (Object.keys(cart).length == 0) {
+      localStorage.clear();
+    }
+    else {
+      localStorage.setItem('cart', JSON.stringify(cart))
+    }
+    // document.getElementById('cart-value').value = cart
+    document.getElementById("total").innerHTML=Total;
+  }
+  else {
+    console.log("HI")
+    {% for p in products %}
+      {% if p %}
+        cart["{{p.id}}"] = 1;
+      {% endif %}
+    {% endfor %}
+    if (Object.keys(cart).length != 0) {
+      localStorage.setItem('cart', JSON.stringify(cart))
+    }
+    Total = 0;
+    for (const key in cart) {
+      document.getElementById('qty'+`${key}`).value = cart[key];
+      price=document.getElementById('price'+`${key}`).innerHTML;
+      Total += parseInt(price)*parseInt(cart[key])
+    };
+    document.getElementById("total").innerHTML=Total;
+  }
+
+	$('.divpr').on("click", "button.plus", function (e) {
+    eachTot=0;
+    
+		e.preventDefault();
+		a = this.id.slice(1,);
+    console.log(a)
+    document.getElementById('qty'+a).stepUp();
+    price=document.getElementById('price'+a).innerHTML;
+    qty=document.getElementById('qty'+a).value;
+    cart[a] = qty;
+    document.getElementById('cart-value').value = cart;
+    localStorage.setItem('cart', JSON.stringify(cart))
+    eachTot=parseInt(price)*parseInt(qty)
+    document.getElementById("eachTot"+a).innerHTML=eachTot;
+    Total = 0;
+    for (const key in cart) {
+      document.getElementById('qty'+`${key}`).value = cart[key];
+      price=document.getElementById('price'+`${key}`).innerHTML;
+      Total += parseInt(price)*parseInt(cart[key])
+    };
+    document.getElementById("total").innerHTML=Total;
+	});
+  
+  $('.divpr').on("click", "button.minus", function (e) {
+		e.preventDefault();
+		a = this.id.slice(1,);
+    pqty=document.getElementById('qty'+a).value;
+    document.getElementById('qty'+a).stepDown();
+    price=document.getElementById('price'+a).innerHTML;
+    qty=document.getElementById('qty'+a).value;
+    cart[a] = qty;
+    document.getElementById('cart-value').value = cart;
+    localStorage.setItem('cart', JSON.stringify(cart))
+    eachTot=parseInt(price)*parseInt(qty)
+    document.getElementById("eachTot"+a).innerHTML=eachTot;
+    Total = 0;
+    for (const key in cart) {
+      document.getElementById('qty'+`${key}`).value = cart[key];
+      price=document.getElementById('price'+`${key}`).innerHTML;
+      Total += parseInt(price)*parseInt(cart[key])
+    };
+    document.getElementById("total").innerHTML=Total;
+	});
+</script>
+{% endblock content %}
